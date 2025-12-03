@@ -27,6 +27,8 @@ También estamos considerando integrar un modelo de IA que resuma el resultado g
   - Integración con ExploitDB para enriquecimiento de vulnerabilidades.
 - **frontend/**: Contiene la aplicación frontend en Angular.
 
+<img width="1143" height="981" alt="imagen" src="https://github.com/user-attachments/assets/05897d14-afe9-42d3-9f9d-1b800fef0c61" />
+
 #### Tecnología Utilizada
 - Node.js
 - Golang

@@ -1,28 +1,28 @@
 # Hackaton Cyber Arena UCM
 
-This project contains the source code for the Hackaton Cyber Arena UCM challenge.
+Este proyecto contiene el código fuente para el desafío Hackaton Cyber Arena UCM.
 
-## Project Structure
+## Estructura del Proyecto
 
-- **backend/**: Contains the Go backend service.
-- **frontend/**: Contains the Angular frontend application.
+- **backend/**: Contiene el servicio backend en Go.
+- **frontend/**: Contiene la aplicación frontend en Angular.
 
-## Getting Started
+## Primeros Pasos
 
 ### Backend
 
-Navigate to the `backend` directory:
+Navega al directorio `backend`:
 
 ```bash
 cd backend
 go run cmd/server/main.go
 ```
 
-The server will start on port 8080.
+El servidor se iniciará en el puerto 8080.
 
 ### Frontend
 
-Navigate to the `frontend` directory:
+Navega al directorio `frontend`:
 
 ```bash
 cd frontend
@@ -30,4 +30,4 @@ npm install
 ng serve
 ```
 
-The application will be available at `http://localhost:4200/`.
+La aplicación estará disponible en `http://localhost:4200/`.

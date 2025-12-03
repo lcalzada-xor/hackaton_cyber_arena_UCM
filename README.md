@@ -4,7 +4,8 @@ Este proyecto contiene el código fuente para el desafío Hackaton Cyber Arena U
 
 ### Tabla de Contenidos
 ----
-1. [[#Descripción del Proyecto]]
+1. <a name="descripción-del-proyecto"></a> 
+[Descripción del Proyecto](#descripción-del-proyecto)
 	- [[#Estructura del Proyecto]]
 	- [[#Tecnología Utilizada]]
 2. [[#Primeros Pasos]]

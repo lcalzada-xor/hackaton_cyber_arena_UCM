@@ -1,0 +1,131 @@
+<div class="max-w-4xl mx-auto">
+    <div class="glass-panel rounded-2xl p-8 md:p-12 mb-12 relative overflow-hidden">
+        <!-- Decorative Elements -->
+        <div
+            class="absolute top-0 right-0 w-64 h-64 bg-cyber-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-64 h-64 bg-cyber-secondary/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none">
+        </div>
+
+        <h1
+            class="text-4xl md:text-5xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white via-cyber-text to-cyber-muted">
+            Búsqueda de Vulnerabilidades
+        </h1>
+        <p class="text-center text-cyber-muted mb-10 text-lg">Busca en la Base de Datos Nacional de Vulnerabilidades con
+            precisión.
+        </p>
+
+        <form (ngSubmit)="search()" class="space-y-6 relative z-10">
+            <!-- Keyword Hero Input -->
+            <div class="flex gap-4">
+                <div class="relative group flex-1">
+                    <div
+                        class="absolute -inset-0.5 bg-gradient-to-r from-cyber-primary to-cyber-secondary rounded-xl opacity-30 group-hover:opacity-100 transition duration-500 blur">
+                    </div>
+                    <div class="relative flex items-center bg-cyber-black rounded-xl p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyber-muted ml-3" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input type="text" [(ngModel)]="params.keyword" name="keyword"
+                            placeholder="Buscar CVEs (ej. log4j, chrome)..."
+                            class="w-full bg-transparent border-none text-white placeholder-cyber-muted focus:ring-0 text-lg px-4 py-2">
+                    </div>
+                </div>
+                <button type="button" (click)="toggleFilters()"
+                    class="px-6 py-2 bg-cyber-dark/50 border border-cyber-muted/30 rounded-xl text-cyber-text hover:bg-cyber-dark hover:border-cyber-primary transition-all duration-300 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
+                    Filtros
+                </button>
+            </div>
+
+            <!-- Active Filters Tags -->
+            <div *ngIf="!showFilters && getActiveFilters().length > 0" class="flex flex-wrap gap-2 animate-fade-in">
+                <div *ngFor="let filter of getActiveFilters()"
+                    class="flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-primary/10 border border-cyber-primary/30 text-sm text-cyber-primary">
+                    <span>{{ filter.label }}</span>
+                    <button type="button" (click)="removeFilter(filter.key)" class="hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                <button type="button" (click)="clearAllFilters()"
+                    class="text-sm text-cyber-muted hover:text-white underline decoration-cyber-primary underline-offset-4 transition-colors">
+                    Limpiar Todo
+                </button>
+            </div>
+
+            <!-- Collapsible Filter Grid -->
+            <div *ngIf="showFilters"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-cyber-black/30 rounded-xl border border-white/5 animate-fade-in">
+                <!-- Severity -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-cyber-muted ml-1">Severidad</label>
+                    <select [(ngModel)]="params.severity" name="severity"
+                        class="input-field appearance-none cursor-pointer">
+                        <option [ngValue]="undefined">Cualquier Severidad</option>
+                        <option *ngFor="let s of severities" [value]="s.value">{{ s.label }}</option>
+                    </select>
+                </div>
+
+                <!-- Start Date -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-cyber-muted ml-1">Fecha Inicio</label>
+                    <input type="date" [(ngModel)]="params.startDate" name="startDate" class="input-field">
+                </div>
+
+                <!-- End Date -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-cyber-muted ml-1">Fecha Fin</label>
+                    <input type="date" [(ngModel)]="params.endDate" name="endDate" class="input-field">
+                </div>
+
+                <!-- CPE -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-cyber-muted ml-1">Nombre CPE</label>
+                    <input type="text" [(ngModel)]="params.cpe" name="cpe" placeholder="cpe:2.3:..."
+                        class="input-field">
+                </div>
+
+                <!-- CWE -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-cyber-muted ml-1">ID CWE</label>
+                    <input type="text" [(ngModel)]="params.cwe" name="cwe" placeholder="CWE-79" class="input-field">
+                </div>
+
+                <!-- Limit -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-cyber-muted ml-1">Límite</label>
+                    <input type="number" [(ngModel)]="params.limit" name="limit" class="input-field">
+                </div>
+
+                <div class="col-span-full flex justify-end">
+                    <button type="button" (click)="clearAllFilters()"
+                        class="text-cyber-muted hover:text-white text-sm px-4 py-2">
+                        Restablecer Filtros
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" [disabled]="loading" class="btn-primary w-full py-4 text-lg tracking-wide uppercase">
+                {{ loading ? 'Buscando...' : 'Buscar Vulnerabilidades' }}
+            </button>
+        </form>
+
+        <div *ngIf="error"
+            class="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-200 text-center backdrop-blur-sm">
+            {{ error }}
+        </div>
+    </div>
+
+    <app-results [data]="results"></app-results>
+</div>

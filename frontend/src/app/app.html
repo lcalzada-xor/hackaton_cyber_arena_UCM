@@ -1,0 +1,48 @@
+<div
+  class="min-h-screen bg-cyber-black text-cyber-text font-sans selection:bg-cyber-primary selection:text-white overflow-x-hidden relative">
+  <!-- Background Gradients -->
+  <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+    <div
+      class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyber-primary/20 rounded-full blur-[120px] animate-pulse">
+    </div>
+    <div
+      class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyber-secondary/20 rounded-full blur-[120px] animate-pulse"
+      style="animation-delay: 2s;"></div>
+  </div>
+
+  <header class="glass-panel sticky top-4 mx-4 rounded-2xl z-50 mt-4">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3 group cursor-pointer">
+        <div class="relative">
+          <div
+            class="w-8 h-8 bg-gradient-to-tr from-cyber-primary to-cyber-secondary rounded-lg shadow-glow group-hover:scale-110 transition-transform duration-300">
+          </div>
+          <div class="absolute inset-0 bg-white/20 rounded-lg blur-sm group-hover:blur-md transition-all duration-300">
+          </div>
+        </div>
+        <span
+          class="font-bold text-2xl tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyber-primary group-hover:to-cyber-secondary transition-all duration-300">
+          BÚSQUEDA<span class="font-light text-cyber-muted group-hover:text-white/80 transition-colors">CVE</span>
+        </span>
+      </div>
+      <nav>
+        <a href="https://github.com/lcalzada-xor/hackaton_cyber_arena_UCM" target="_blank"
+          class="text-sm font-medium text-cyber-muted hover:text-white transition-colors relative group">
+          Documentación
+          <span
+            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyber-primary transition-all duration-300 group-hover:w-full"></span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-12 relative z-10">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="border-t border-white/5 mt-12 py-8 bg-cyber-black/50 backdrop-blur-sm">
+    <div class="container mx-auto px-4 text-center text-cyber-muted text-sm">
+      <p>&copy; 2025 Herramienta de Búsqueda CVE. Impulsado por NVD API.</p>
+    </div>
+  </footer>
+</div>

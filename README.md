@@ -5,6 +5,8 @@ Este proyecto contiene el código fuente para el desafío Hackaton Cyber Arena U
 ## Estructura del Proyecto
 
 - **backend/**: Contiene el servicio backend en Go.
+  - API REST con soporte para búsqueda avanzada y ordenación.
+  - Integración con ExploitDB para enriquecimiento de vulnerabilidades.
 - **frontend/**: Contiene la aplicación frontend en Angular.
 
 ## Primeros Pasos

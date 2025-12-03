@@ -74,3 +74,37 @@ go build -o cve-search ./cmd/cve-search
 ```bash
 go test ./...
 ```
+
+## API del Servidor
+
+El servidor expone una API REST para realizar búsquedas.
+
+### Endpoints
+
+#### `GET /api/search`
+
+Realiza una búsqueda de CVEs.
+
+**Parámetros:**
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `keyword` | Palabra clave a buscar |
+| `severity` | Severidad CVSS v3 (LOW, MEDIUM, HIGH, CRITICAL) |
+| `startDate` | Fecha de Inicio (AAAA-MM-DD) |
+| `endDate` | Fecha de Fin (AAAA-MM-DD) |
+| `cpe` | Nombre CPE |
+| `cwe` | ID CWE |
+| `cvssV2Severity` | Severidad CVSS v2 |
+| `modStartDate` | Fecha de Inicio de Última Modificación |
+| `modEndDate` | Fecha de Fin de Última Modificación |
+| `source` | Identificador de Fuente |
+| `limit` | Número de resultados (por defecto 10) |
+| `sort` | Campo para ordenar (`published`, `modified`, `score`) |
+| `direction` | Dirección del ordenamiento (`asc`, `desc`) |
+
+**Ejemplo de uso:**
+
+```bash
+curl "http://localhost:8081/api/search?keyword=log4j&sort=published&direction=desc"
+```

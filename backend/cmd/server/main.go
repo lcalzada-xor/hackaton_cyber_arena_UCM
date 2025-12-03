@@ -13,6 +13,7 @@ import (
 	"github.com/lcalzada-xor/hackaton_cyber_arena_UCM/internal/models"
 	"github.com/lcalzada-xor/hackaton_cyber_arena_UCM/pkg/exploitdb"
 	"github.com/lcalzada-xor/hackaton_cyber_arena_UCM/pkg/nvd"
+	"github.com/lcalzada-xor/hackaton_cyber_arena_UCM/pkg/sorter"
 )
 
 func main() {
@@ -136,6 +137,16 @@ func main() {
 					result.Vulnerabilities[i].Exploits = modelExploits
 				}
 			}
+		}
+
+		// Sort Results if requested
+		sortBy := query.Get("sort")
+		direction := query.Get("direction")
+		if sortBy != "" {
+			if direction == "" {
+				direction = "desc"
+			}
+			sorter.SortVulnerabilities(result.Vulnerabilities, sortBy, direction)
 		}
 
 		w.Header().Set("Content-Type", "application/json")

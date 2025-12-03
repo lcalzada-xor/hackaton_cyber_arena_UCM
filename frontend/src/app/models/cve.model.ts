@@ -115,4 +115,6 @@ export interface SearchParams {
     cpe?: string;
     cwe?: string;
     limit?: number;
+    sort?: string;
+    direction?: string;
 }

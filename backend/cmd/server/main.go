@@ -13,6 +13,7 @@ import (
 	"github.com/lcalzada-xor/hackaton_cyber_arena_UCM/internal/models"
 	"github.com/lcalzada-xor/hackaton_cyber_arena_UCM/pkg/exploitdb"
 	"github.com/lcalzada-xor/hackaton_cyber_arena_UCM/pkg/nvd"
+	"github.com/lcalzada-xor/hackaton_cyber_arena_UCM/pkg/openrouter"
 	"github.com/lcalzada-xor/hackaton_cyber_arena_UCM/pkg/sorter"
 )
 
@@ -72,6 +73,9 @@ func main() {
 		}
 	}
 
+	// Initialize OpenRouter Client
+	openRouterClient := openrouter.NewClient(cfg.OpenRouterAPIKey)
+
 	http.HandleFunc("/api/search", func(w http.ResponseWriter, r *http.Request) {
 		// Enable CORS - Restrict to Frontend Origin
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
@@ -109,7 +113,38 @@ func main() {
 		}
 
 		// Execute Search
-		result, err := client.BuscarCVEs(params)
+		var result *models.RespuestaNVD
+		var err error
+
+		// Special handling for "Newest" sort (Published Descending)
+		// NVD API returns Oldest first by default. To get Newest, we need the last page.
+		sortBy := query.Get("sort")
+		direction := query.Get("direction")
+		if direction == "" {
+			direction = "desc"
+		}
+
+		if sortBy == "published" && direction == "desc" {
+			// 1. Get Total Results
+			countParams := params
+			countParams.ResultsPerPage = 1
+			countResult, err := client.BuscarCVEs(countParams)
+			if err != nil {
+				log.Printf("Error getting count for reverse sort: %v", err)
+				http.Error(w, "Error searching CVEs", http.StatusInternalServerError)
+				return
+			}
+
+			// 2. Calculate Start Index for Last Page
+			totalResults := countResult.TotalResults
+			startIndex := totalResults - params.ResultsPerPage
+			if startIndex < 0 {
+				startIndex = 0
+			}
+			params.StartIndex = startIndex
+		}
+
+		result, err = client.BuscarCVEs(params)
 		if err != nil {
 			log.Printf("Error searching CVEs: %v", err)
 			http.Error(w, "Error searching CVEs", http.StatusInternalServerError)
@@ -140,12 +175,7 @@ func main() {
 		}
 
 		// Sort Results if requested
-		sortBy := query.Get("sort")
-		direction := query.Get("direction")
 		if sortBy != "" {
-			if direction == "" {
-				direction = "desc"
-			}
 			sorter.SortVulnerabilities(result.Vulnerabilities, sortBy, direction)
 		}
 
@@ -153,6 +183,49 @@ func main() {
 		if err := json.NewEncoder(w).Encode(result); err != nil {
 			log.Printf("Error encoding response: %v", err)
 		}
+	})
+
+	http.HandleFunc("/api/summary", func(w http.ResponseWriter, r *http.Request) {
+		// Enable CORS
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		if r.Method != "POST" {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		var req struct {
+			ID          string `json:"id"`
+			Description string `json:"description"`
+		}
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+
+		summary, err := openRouterClient.GetSummary(req.ID, req.Description)
+		if err != nil {
+			log.Printf("Error getting summary for %s: %v", req.ID, err)
+			http.Error(w, fmt.Sprintf("Error getting summary: %v", err), http.StatusInternalServerError)
+			return
+		}
+
+		resp := struct {
+			Summary string `json:"summary"`
+		}{
+			Summary: summary,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(resp)
 	})
 
 	port := "8081"

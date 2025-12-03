@@ -23,7 +23,16 @@ export class CveService {
         if (params.cpe) httpParams = httpParams.set('cpe', params.cpe);
         if (params.cwe) httpParams = httpParams.set('cwe', params.cwe);
         if (params.limit) httpParams = httpParams.set('limit', params.limit);
+        if (params.sort) httpParams = httpParams.set('sort', params.sort);
+        if (params.direction) httpParams = httpParams.set('direction', params.direction);
 
         return this.http.get<CveResponse>(this.apiUrl, { params: httpParams });
+    }
+
+    getAiSummary(cveId: string, description: string): Observable<{ summary: string }> {
+        return this.http.post<{ summary: string }>(`${environment.apiUrl}/summary`, {
+            id: cveId,
+            description: description
+        });
     }
 }

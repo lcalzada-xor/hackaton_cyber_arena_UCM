@@ -26,6 +26,17 @@ export class SearchComponent {
     { label: 'ALTA', value: 'HIGH' },
     { label: 'CRÍTICA', value: 'CRITICAL' }
   ];
+
+  sortOptions = [
+    { label: 'Fecha Publicación', value: 'published' },
+    { label: 'Última Modificación', value: 'modified' },
+    { label: 'Puntuación', value: 'score' }
+  ];
+
+  directionOptions = [
+    { label: 'Descendente', value: 'desc' },
+    { label: 'Ascendente', value: 'asc' }
+  ];
   showFilters = false;
 
   constructor(private cveService: CveService) { }
@@ -45,6 +56,14 @@ export class SearchComponent {
     if (this.params.cpe) active.push({ key: 'cpe', value: this.params.cpe, label: `CPE: ${this.params.cpe}` });
     if (this.params.cwe) active.push({ key: 'cwe', value: this.params.cwe, label: `CWE: ${this.params.cwe}` });
     if (this.params.limit && this.params.limit !== 10) active.push({ key: 'limit', value: this.params.limit, label: `Límite: ${this.params.limit}` });
+    if (this.params.sort) {
+      const sortLabel = this.sortOptions.find(s => s.value === this.params.sort)?.label || this.params.sort;
+      active.push({ key: 'sort', value: this.params.sort, label: `Ordenar: ${sortLabel}` });
+    }
+    if (this.params.direction && this.params.direction !== 'desc') {
+      const dirLabel = this.directionOptions.find(d => d.value === this.params.direction)?.label || this.params.direction;
+      active.push({ key: 'direction', value: this.params.direction, label: `Dirección: ${dirLabel}` });
+    }
     return active;
   }
 
@@ -56,6 +75,8 @@ export class SearchComponent {
       case 'cpe': this.params.cpe = ''; break;
       case 'cwe': this.params.cwe = ''; break;
       case 'limit': this.params.limit = 10; break;
+      case 'sort': this.params.sort = undefined; break;
+      case 'direction': this.params.direction = 'desc'; break;
     }
     this.search();
   }
@@ -79,6 +100,8 @@ export class SearchComponent {
     if (this.params.cpe) searchParams.cpe = this.params.cpe;
     if (this.params.cwe) searchParams.cwe = this.params.cwe;
     if (this.params.limit) searchParams.limit = this.params.limit;
+    if (this.params.sort) searchParams.sort = this.params.sort;
+    if (this.params.direction) searchParams.direction = this.params.direction;
 
     this.cveService.searchCves(searchParams).subscribe({
       next: (data) => {

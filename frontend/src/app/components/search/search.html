@@ -110,10 +110,27 @@
                     <input type="text" [(ngModel)]="params.cwe" name="cwe" placeholder="CWE-79" class="input-field">
                 </div>
 
-                <!-- Limit -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium text-cyber-muted ml-1">Límite</label>
                     <input type="number" [(ngModel)]="params.limit" name="limit" class="input-field">
+                </div>
+
+                <!-- Sort By -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-cyber-muted ml-1">Ordenar por</label>
+                    <select [(ngModel)]="params.sort" name="sort" class="input-field appearance-none cursor-pointer">
+                        <option [ngValue]="undefined">Relevancia (Defecto)</option>
+                        <option *ngFor="let s of sortOptions" [value]="s.value">{{ s.label }}</option>
+                    </select>
+                </div>
+
+                <!-- Direction -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-cyber-muted ml-1">Dirección</label>
+                    <select [(ngModel)]="params.direction" name="direction"
+                        class="input-field appearance-none cursor-pointer">
+                        <option *ngFor="let d of directionOptions" [value]="d.value">{{ d.label }}</option>
+                    </select>
                 </div>
 
                 <div class="col-span-full flex justify-end">

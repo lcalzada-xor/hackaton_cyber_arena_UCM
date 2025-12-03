@@ -5,23 +5,29 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/joho/godotenv"
 )
 
-// Configuracion mantiene la configuración de la aplicación.
-type Configuracion struct {
-	APIKey       string `json:"api_key"`
-	OutputFormat string `json:"output_format"`
-	DefaultLimit int    `json:"default_limit"`
+// Config mantiene la configuración de la aplicación.
+type Config struct {
+	APIKey           string `json:"api_key"`
+	OutputFormat     string `json:"output_format"`
+	DefaultLimit     int    `json:"default_limit"`
+	OpenRouterAPIKey string `json:"openrouter_api_key"`
 }
 
 // CargarConfiguracion carga la configuración desde un archivo y variables de entorno.
 // Prioridad: Vars Entorno > Archivo Config > Valores por Defecto
-func CargarConfiguracion() (*Configuracion, error) {
+func CargarConfiguracion() (*Config, error) {
 	// Valores por Defecto
-	cfg := &Configuracion{
+	cfg := &Config{
 		OutputFormat: "human",
 		DefaultLimit: 10,
 	}
+
+	// Cargar .env si existe
+	godotenv.Load()
 
 	// Cargar desde archivo
 	home, err := os.UserHomeDir()
@@ -41,6 +47,9 @@ func CargarConfiguracion() (*Configuracion, error) {
 	}
 	if fmt := os.Getenv("CVE_OUTPUT_FORMAT"); fmt != "" {
 		cfg.OutputFormat = fmt
+	}
+	if key := os.Getenv("OPENROUTER_API_KEY"); key != "" {
+		cfg.OpenRouterAPIKey = key
 	}
 
 	return cfg, nil

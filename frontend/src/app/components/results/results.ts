@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CveResponse, Vulnerability } from '../../models/cve.model';
+import { CveService } from '../../services/cve.service';
 
 @Component({
   selector: 'app-results',
@@ -12,8 +13,33 @@ import { CveResponse, Vulnerability } from '../../models/cve.model';
 export class ResultsComponent {
   @Input() data: CveResponse | null = null;
 
+  summaryState: { [key: string]: { loading: boolean, content: string | null, error: string | null } } = {};
+
+  constructor(private cveService: CveService) { }
+
   get vulnerabilities(): Vulnerability[] {
     return this.data?.vulnerabilities || [];
+  }
+
+  getSummary(v: Vulnerability) {
+    const cveId = v.cve.id;
+    const description = v.cve.descriptions[0]?.value || 'No description available';
+
+    if (this.summaryState[cveId]?.content) {
+      return; // Already loaded
+    }
+
+    this.summaryState[cveId] = { loading: true, content: null, error: null };
+
+    this.cveService.getAiSummary(cveId, description).subscribe({
+      next: (res) => {
+        this.summaryState[cveId] = { loading: false, content: res.summary, error: null };
+      },
+      error: (err) => {
+        console.error('Error fetching summary:', err);
+        this.summaryState[cveId] = { loading: false, content: null, error: 'Failed to load summary. Please try again.' };
+      }
+    });
   }
 
   getSeverityColor(v: Vulnerability): string {

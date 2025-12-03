@@ -9,6 +9,7 @@ services:
       - PORT=8081
       # Pass NVD_API_KEY from host environment
       - NVD_API_KEY=${NVD_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
     restart: unless-stopped
 
   frontend:

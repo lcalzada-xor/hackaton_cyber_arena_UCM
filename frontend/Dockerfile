@@ -18,6 +18,9 @@ RUN npm run build
 # Final Stage
 FROM nginx:alpine
 
+# Copy custom nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy built assets from builder stage
 # Note: The output path depends on angular.json, usually dist/frontend/browser or similar
 # We assume standard Angular 17+ output structure

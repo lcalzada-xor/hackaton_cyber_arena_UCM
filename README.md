@@ -4,14 +4,15 @@ Este proyecto contiene el código fuente para el desafío Hackaton Cyber Arena U
 
 ### Tabla de Contenidos
 ----
-1. <a name="descripción-del-proyecto"></a> 
-[Descripción del Proyecto](#descripción-del-proyecto)
-	- [[#Estructura del Proyecto]]
-	- [[#Tecnología Utilizada]]
-2. [[#Primeros Pasos]]
-	- [[#Instalación y Ejecución (Docker)]]
-	- [[#Instalación y Ejecución (sin Docker)]]
-3. [[#Contacto]]
+1. [Descripción del Proyecto](#descripción-del-proyecto)
+   - [Estructura del Proyecto](#estructura-del-proyecto)
+   - [Tecnología Utilizada](#tecnología-utilizada)
+
+2. [Primeros Pasos](#primeros-pasos)
+   - [Instalación y Ejecución (Docker)](#instalación-y-ejecución-docker)
+   - [Instalación y Ejecución (sin Docker)](#instalación-y-ejecución-sin-docker)
+
+3. [Contacto](#contacto)
 
 ### Descripción del Proyecto
 ----
@@ -79,8 +80,8 @@ La aplicación estará disponible en `http://localhost:4200/`.
 ---
 Para cualquier detalle, contacta a los propietarios del proyecto en LinkedIn:
 
-[lucas-calzada-del-pozo](https://www.linkedin.com/in/lucas-calzada-del-pozo-562571304/ )
-[alberto-meléndez-garcía](https://www.linkedin.com/in/alberto-melendez-garcia-4713a1264/)
-[javier-julve-yubero](https://www.linkedin.com/in/javier-julve-yubero-188203384/ "https://www.linkedin.com/in/javier-julve-yubero-188203384/")
-[pablo-garcía-viña](https://www.linkedin.com/in/pablo-garc%C3%ADa-vi%C3%B1a/)
+- [Lucas Calzada del Pozo](https://www.linkedin.com/in/lucas-calzada-del-pozo-562571304/)
+- [Alberto Meléndez García](https://www.linkedin.com/in/alberto-melendez-garcia-4713a1264/)
+- [Javier Julve Yubero](https://www.linkedin.com/in/javier-julve-yubero-188203384/)
+- [Pablo García Viña](https://www.linkedin.com/in/pablo-garc%C3%ADa-vi%C3%B1a/)
 

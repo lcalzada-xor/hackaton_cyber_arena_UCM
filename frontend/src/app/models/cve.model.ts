@@ -10,6 +10,17 @@ export interface CveResponse {
 
 export interface Vulnerability {
     cve: Cve;
+    exploits?: Exploit[];
+}
+
+export interface Exploit {
+    id: string;
+    name: string;
+    type: string;
+    url: string;
+    description: string;
+    date: string;
+    author: string;
 }
 
 export interface Cve {

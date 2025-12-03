@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
-import { SearchComponent } from './components/search/search';
 
 export const routes: Routes = [
-    { path: '', component: SearchComponent },
+    {
+        path: '',
+        loadComponent: () => import('./components/search/search').then(m => m.SearchComponent)
+    },
     { path: '**', redirectTo: '' }
 ];

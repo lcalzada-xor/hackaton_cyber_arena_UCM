@@ -3,11 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CveResponse, SearchParams } from '../models/cve.model';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class CveService {
-    private apiUrl = 'http://localhost:8080/api/search';
+    private apiUrl = `${environment.apiUrl}/search`;
 
     constructor(private http: HttpClient) { }
 

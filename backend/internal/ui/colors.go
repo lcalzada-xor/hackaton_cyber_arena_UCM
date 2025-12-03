@@ -12,6 +12,7 @@ const (
 	ColorDarkOrange  = "\033[38;5;166m"               // Naranja Más Oscuro
 	ColorHighlight   = "\033[48;5;208m\033[38;5;232m" // Negro sobre fondo Naranja
 	ColorGray        = "\033[38;5;240m"
+	ColorRed         = "\033[31m"
 )
 
 // ResaltarPalabraClave resalta la palabra clave en el texto usando códigos de escape ANSI.

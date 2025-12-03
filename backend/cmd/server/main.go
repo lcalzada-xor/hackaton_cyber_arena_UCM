@@ -13,22 +13,18 @@ import (
 )
 
 func main() {
-	// Load Config
+	// Load Configuration
 	cfg, err := config.CargarConfiguracion()
 	if err != nil {
-		log.Printf("Warning: Failed to load config: %v", err)
+		log.Printf("Warning: Failed to load configuration: %v", err)
 	}
 
-	apiKey := cfg.APIKey
-	if envKey := os.Getenv("NVD_API_KEY"); envKey != "" {
-		apiKey = envKey
-	}
-
-	client := nvd.NuevoCliente(apiKey)
+	// Initialize NVD Client
+	client := nvd.NuevoCliente(cfg.APIKey)
 
 	http.HandleFunc("/api/search", func(w http.ResponseWriter, r *http.Request) {
-		// Enable CORS
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		// Enable CORS - Restrict to Frontend Origin
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
@@ -39,38 +35,44 @@ func main() {
 
 		query := r.URL.Query()
 
-		limit, _ := strconv.Atoi(query.Get("limit"))
-		if limit == 0 {
-			limit = 10
-		}
-
+		// Map query params to NVD Search Parameters
 		params := nvd.ParametrosBusqueda{
 			KeywordSearch:    query.Get("keyword"),
-			ResultsPerPage:   limit,
 			CvssV3Severity:   query.Get("severity"),
-			PubStartDate:     formatDate(query.Get("startDate"), true),
-			PubEndDate:       formatDate(query.Get("endDate"), false),
+			PubStartDate:     query.Get("startDate"),
+			PubEndDate:       query.Get("endDate"),
 			CpeName:          query.Get("cpe"),
 			CweId:            query.Get("cwe"),
 			CvssV2Severity:   query.Get("cvssV2Severity"),
-			LastModStartDate: formatDate(query.Get("modStartDate"), true),
-			LastModEndDate:   formatDate(query.Get("modEndDate"), false),
+			LastModStartDate: query.Get("modStartDate"),
+			LastModEndDate:   query.Get("modEndDate"),
 			SourceIdentifier: query.Get("source"),
 		}
 
-		results, err := client.BuscarCVEs(params)
+		// Handle Limit / ResultsPerPage
+		if limitStr := query.Get("limit"); limitStr != "" {
+			if limit, err := strconv.Atoi(limitStr); err == nil {
+				params.ResultsPerPage = limit
+			}
+		} else {
+			params.ResultsPerPage = cfg.DefaultLimit
+		}
+
+		// Execute Search
+		result, err := client.BuscarCVEs(params)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error searching CVEs: %v", err), http.StatusInternalServerError)
+			log.Printf("Error searching CVEs: %v", err)
+			http.Error(w, "Error searching CVEs", http.StatusInternalServerError)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		if err := json.NewEncoder(w).Encode(results); err != nil {
+		if err := json.NewEncoder(w).Encode(result); err != nil {
 			log.Printf("Error encoding response: %v", err)
 		}
 	})
 
-	port := "8080"
+	port := "8081"
 	if p := os.Getenv("PORT"); p != "" {
 		port = p
 	}
@@ -81,13 +83,4 @@ func main() {
 	}
 }
 
-func formatDate(dateStr string, isStart bool) string {
-	if dateStr == "" {
-		return ""
-	}
-	// Assuming input is YYYY-MM-DD
-	if isStart {
-		return dateStr + "T00:00:00.000"
-	}
-	return dateStr + "T23:59:59.999"
-}
+// Helper functions removed as they are no longer needed

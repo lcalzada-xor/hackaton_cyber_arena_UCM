@@ -13,7 +13,19 @@ type RespuestaNVD struct {
 
 // ItemVulnerabilidad envuelve los detalles del CVE.
 type ItemVulnerabilidad struct {
-	CVE Vulnerabilidad `json:"cve"`
+	CVE      Vulnerabilidad `json:"cve"`
+	Exploits []Exploit      `json:"exploits,omitempty"`
+}
+
+// Exploit representa un exploit encontrado en go-exploitdb.
+type Exploit struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Type        string `json:"type"`
+	URL         string `json:"url"`
+	Description string `json:"description"`
+	Date        string `json:"date"`
+	Author      string `json:"author"`
 }
 
 // Vulnerabilidad contiene los datos principales de Vulnerabilidades y Exposiciones Comunes.
